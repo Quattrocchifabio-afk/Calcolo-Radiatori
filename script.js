@@ -65,9 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const elementsNeeded = Math.ceil(powerNeeded / actualPowerPerElement);
         
         let waterPerElement = 0.35; // Default average fallback
-        if (radiatorSelect.value === "115") waterPerElement = 0.30;
-        else if (radiatorSelect.value === "135") waterPerElement = 0.35;
-        else if (radiatorSelect.value === "155") waterPerElement = 0.40;
+        if (radiatorSelect.value === "115") waterPerElement = 0.28; // I. 500
+        else if (radiatorSelect.value === "135") waterPerElement = 0.33; // I. 600
+        else if (radiatorSelect.value === "155") waterPerElement = 0.38; // I. 700
+        else if (radiatorSelect.value === "175") waterPerElement = 0.43; // I. 800
 
         const litersNeeded = elementsNeeded * waterPerElement;
         
