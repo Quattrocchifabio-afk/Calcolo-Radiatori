@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Proterco Italia srl - Calcolo Radiatori</title>
+    <!-- PWA Setup -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob shape1"></div>
+        <div class="blob shape2"></div>
+    </div>
+
+    <main class="app-container">
+        <header>
+            <h1>Proterco Italia srl</h1>
+            <p class="subtitle">Calcolo elementi radiatori in alluminio - Zona Climatica D</p>
+        </header>
+
+        <section class="config-section glass-panel">
+            <h2>🌍 Impostazioni Generali</h2>
+            <div class="input-group">
+                <label for="isolation">Livello di Isolamento (W/m³)</label>
+                <select id="isolation">
+                    <option value="25">Ottimo (Recente costruzione/Cappotto) - 25 W/m³</option>
+                    <option value="35" selected>Medio (Standard abitativo) - 35 W/m³</option>
+                    <option value="45">Scarso (Infissi vecchi/Nessun isolamento) - 45 W/m³</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="radiator-type">Altezza Radiatore (Alluminio)</label>
+                <select id="radiator-type">
+                    <option value="115">600 mm (~115 W ad elemento)</option>
+                    <option value="135">700 mm (~135 W ad elemento)</option>
+                    <option value="155">800 mm (~155 W ad elemento)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="supply-temp">Temp. Mandata Imp. (°C)</label>
+                <select id="supply-temp">
+                    <option value="50">50°C (Bassa Temp. / Pompa di calore / Condensazione)</option>
+                    <option value="60">60°C (Media Temp. / Caldaia a Condens.)</option>
+                    <option value="70" selected>70°C (Alta Temp. / Impianti Tradizionali, ΔT 50)</option>
+                    <option value="80">80°C (Altissima Temp. / Vecchi Impianti, ΔT 60)</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="room-section">
+            <div class="glass-panel form-panel">
+                <h2>Aggiungi Ambiente</h2>
+                <form id="room-form">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="room-name">Nome Stanza</label>
+                            <input type="text" id="room-name" placeholder="es. Soggiorno" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="room-length">Lunghezza (m)</label>
+                            <input type="number" id="room-length" step="0.1" min="0.1" placeholder="4.0" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="room-width">Larghezza (m)</label>
+                            <input type="number" id="room-width" step="0.1" min="0.1" placeholder="3.0" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="room-height">Altezza (m)</label>
+                            <input type="number" id="room-height" step="0.1" min="0.1" placeholder="2.7" value="2.7" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Calcola e Aggiungi</button>
+                </form>
+            </div>
+
+            <div class="results-container">
+                <div class="results-header">
+                    <h2>Riepilogo Ambienti</h2>
+                    <button class="btn-pdf" id="btn-pdf" onclick="window.print()">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        Stampa / Salva PDF
+                    </button>
+                </div>
+                <div id="rooms-list" class="rooms-list">
+                    <div class="empty-state">Nessun ambiente aggiunto. Compila il modulo per iniziare.</div>
+                </div>
+                
+                <div class="total-summary glass-panel hidden" id="total-summary">
+                    <h3>Totale Abitazione</h3>
+                    <div class="summary-stats">
+                        <div class="stat">
+                            <span class="stat-label">Fabbisogno Totale</span>
+                            <span class="stat-value" id="total-power">0 W</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Elementi Totali</span>
+                            <span class="stat-value highlight" id="total-elements">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Acqua Totale (Litri)</span>
+                            <span class="stat-value" id="total-liters">0.0 L</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 Proterco Italia srl - Tutti i diritti riservati.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered', reg))
+                    .catch(err => console.log('Service Worker registration failed', err));
+            });
+        }
+    </script>
+</body>
+</html>
